@@ -1,0 +1,7073 @@
+{
+  "manifest_schema_version": 3,
+  "sdk_version": "5.11.0",
+  "app_id": "ironclad-connector",
+  "version": "0.1.0",
+  "name": "Ironclad",
+  "description": "Connect your own Ironclad CLM company -- launch and manage contract workflows, browse the signed-agreement Records repository, manage counterparty Entities and post-signature Obligations, and wire up webhooks for real-time contract lifecycle events.",
+  "icon": "icon.svg",
+  "actions_explicit": true,
+  "system": false,
+  "capabilities": [
+    "ironclad:read",
+    "ironclad:write"
+  ],
+  "tools": [
+    {
+      "name": "connect_ironclad",
+      "description": "Connect your own Ironclad CLM company using an OAuth Client (Client ID/Secret) registered in Ironclad's Company Settings > API, after checking it actually works.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "create:connection"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "client_id": {
+            "description": "OAuth Client ID from Ironclad Company Settings > API > OAuth Clients.",
+            "title": "Client Id",
+            "type": "string"
+          },
+          "client_secret": {
+            "description": "OAuth Client Secret shown once when the client was created.",
+            "title": "Client Secret",
+            "type": "string"
+          },
+          "as_user_email": {
+            "description": "Email of the Ironclad user whose permissions this connection acts as (e.g. legal-ops@yourcompany.com).",
+            "title": "As User Email",
+            "type": "string"
+          },
+          "region": {
+            "default": "na1",
+            "description": "Ironclad data region: na1 (default US), eu1 (EU data residency), or demo (sandbox).",
+            "title": "Region",
+            "type": "string"
+          },
+          "label": {
+            "default": "",
+            "description": "Optional friendly name for this connection, e.g. 'Legal Ops production'.",
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "client_id",
+          "client_secret",
+          "as_user_email"
+        ],
+        "title": "ConnectIroncladParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "detail": {
+            "default": "",
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "title": "ProviderConnection",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.connect_ironclad",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "disconnect_ironclad",
+      "description": "Disconnect one Ironclad company. Nothing in Ironclad itself is changed; only the saved OAuth Client credentials here are deleted.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "delete:connection"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "description": "Connection id to remove, from list_connections.",
+            "title": "Connection Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "connection_id"
+        ],
+        "title": "DisconnectIroncladParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.disconnect_ironclad",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "list_connections",
+      "description": "List the connected Ironclad companies.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "description": "Explicit empty params model -- V17 disallows untyped handlers.",
+        "properties": {},
+        "title": "NoParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "ProviderConnection": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "default": "",
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "detail": {
+                "default": "",
+                "title": "Detail",
+                "type": "string"
+              }
+            },
+            "title": "ProviderConnection",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/ProviderConnection"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "items"
+        ],
+        "title": "ProviderConnectionList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.list_connections",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "list_all_workflows",
+      "description": "List active/in-progress Ironclad workflows (contracts currently moving through approval, not yet completed records). Paginated.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "page": {
+            "default": 0,
+            "description": "Page number, 0-indexed.",
+            "title": "Page",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 50,
+            "description": "Results per page (max 50).",
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "status": {
+            "default": "",
+            "description": "Filter by workflow status, e.g. Active, Completed, Cancelled. Leave blank for all.",
+            "title": "Status",
+            "type": "string"
+          },
+          "template_id": {
+            "default": "",
+            "description": "Filter by workflow design/template id. Leave blank for all templates.",
+            "title": "Template Id",
+            "type": "string"
+          },
+          "last_updated": {
+            "default": "",
+            "description": "Only workflows updated since this UTC timestamp (ISO 8601). Leave blank for no filter.",
+            "title": "Last Updated",
+            "type": "string"
+          }
+        },
+        "title": "ListWorkflowsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "Workflow": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "default": "",
+                "title": "Status",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "name": {
+                "default": "",
+                "title": "Name",
+                "type": "string"
+              },
+              "template_id": {
+                "default": "",
+                "title": "Template Id",
+                "type": "string"
+              },
+              "created_at": {
+                "default": "",
+                "title": "Created At",
+                "type": "string"
+              },
+              "raw_json": {
+                "default": "",
+                "title": "Raw Json",
+                "type": "string"
+              }
+            },
+            "required": [
+              "title"
+            ],
+            "title": "Workflow",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/Workflow"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "total": {
+            "default": 0,
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "items"
+        ],
+        "title": "WorkflowList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.list_all_workflows",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "get_workflow",
+      "description": "Read one Ironclad workflow in full: current step, attribute values, participants, and approval state.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "workflow_id": {
+            "description": "Workflow id, e.g. from list_workflows.",
+            "title": "Workflow Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workflow_id"
+        ],
+        "title": "GetWorkflowParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "default": "",
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "template_id": {
+            "default": "",
+            "title": "Template Id",
+            "type": "string"
+          },
+          "created_at": {
+            "default": "",
+            "title": "Created At",
+            "type": "string"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "title": "Workflow",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.get_workflow",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "launch_workflow",
+      "description": "Launch a new Ironclad workflow (contract request) synchronously from a template. Blocks until created -- use launch_workflow_async if attaching large files.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.workflow.launched"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "template_id": {
+            "description": "Workflow design/template id to launch, from list_workflow_schemas.",
+            "title": "Template Id",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name for this new workflow instance, e.g. 'MSA - Acme Corp'.",
+            "title": "Name",
+            "type": "string"
+          },
+          "attributes_json": {
+            "default": "{}",
+            "description": "JSON object mapping attribute IDs to launch-form field values, e.g. {\"counterpartyName\": \"Acme Corp\"}.",
+            "title": "Attributes Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "template_id",
+          "name"
+        ],
+        "title": "LaunchWorkflowParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "default": "",
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "template_id": {
+            "default": "",
+            "title": "Template Id",
+            "type": "string"
+          },
+          "created_at": {
+            "default": "",
+            "title": "Created At",
+            "type": "string"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "title": "Workflow",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.launch_workflow",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "launch_workflow_async",
+      "description": "Launch a new Ironclad workflow asynchronously (non-blocking) -- recommended when the launch also includes file attachments. Returns immediately with a launch acknowledgement; poll get_workflow with the returned id to see it settle.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.workflow.launched"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "template_id": {
+            "description": "Workflow design/template id to launch, from list_workflow_schemas.",
+            "title": "Template Id",
+            "type": "string"
+          },
+          "name": {
+            "description": "Name for this new workflow instance, e.g. 'MSA - Acme Corp'.",
+            "title": "Name",
+            "type": "string"
+          },
+          "attributes_json": {
+            "default": "{}",
+            "description": "JSON object mapping attribute IDs to launch-form field values, e.g. {\"counterpartyName\": \"Acme Corp\"}.",
+            "title": "Attributes Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "template_id",
+          "name"
+        ],
+        "title": "LaunchWorkflowAsyncParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "description": "Generic pass-through entity for Ironclad resources whose shape is\nlargely company-configured (custom attributes/properties) -- workflow\nschemas, signature status, attachments, comments, approvals, report\nstatus. Raw JSON is preserved verbatim rather than forcing a rigid\nschema onto per-company custom fields.",
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "RawResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.launch_workflow_async",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "bulk_launch_workflow",
+      "description": "Launch several workflows from the same template in one call, e.g. one NDA per new counterparty. Pass launches_json as a JSON array of {name, attributes} objects.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.workflow.launched"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "template_id": {
+            "description": "Workflow design/template id to launch for every row.",
+            "title": "Template Id",
+            "type": "string"
+          },
+          "launches_json": {
+            "description": "JSON array of objects, each with 'name' and 'attributes' for one workflow to launch, e.g. [{\"name\": \"MSA - A\", \"attributes\": {...}}].",
+            "title": "Launches Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "template_id",
+          "launches_json"
+        ],
+        "title": "BulkLaunchWorkflowParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "description": "Generic pass-through entity for Ironclad resources whose shape is\nlargely company-configured (custom attributes/properties) -- workflow\nschemas, signature status, attachments, comments, approvals, report\nstatus. Raw JSON is preserved verbatim rather than forcing a rigid\nschema onto per-company custom fields.",
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "RawResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.bulk_launch_workflow",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "cancel_workflow",
+      "description": "Cancel an active Ironclad workflow before it completes.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.workflow.cancelled"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "workflow_id": {
+            "description": "Workflow id to cancel.",
+            "title": "Workflow Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workflow_id"
+        ],
+        "title": "CancelWorkflowParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.cancel_workflow",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "revert_workflow_to_review",
+      "description": "Send an active workflow back to its Review step -- e.g. after a signer rejects, or new redlines require another look.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.workflow.reverted"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "workflow_id": {
+            "description": "Workflow id to revert.",
+            "title": "Workflow Id",
+            "type": "string"
+          },
+          "reason": {
+            "default": "",
+            "description": "Optional reason for reverting to the review step.",
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workflow_id"
+        ],
+        "title": "RevertWorkflowToReviewParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "description": "Generic pass-through entity for Ironclad resources whose shape is\nlargely company-configured (custom attributes/properties) -- workflow\nschemas, signature status, attachments, comments, approvals, report\nstatus. Raw JSON is preserved verbatim rather than forcing a rigid\nschema onto per-company custom fields.",
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "RawResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.revert_workflow_to_review",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "list_workflow_schemas",
+      "description": "List all workflow designs (templates) configured in this Ironclad company -- their template ids, needed to launch a workflow.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "page": {
+            "default": 0,
+            "description": "Page number, 0-indexed.",
+            "title": "Page",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 50,
+            "description": "Results per page.",
+            "title": "Page Size",
+            "type": "integer"
+          }
+        },
+        "title": "ListWorkflowSchemasParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "description": "Generic pass-through entity for Ironclad resources whose shape is\nlargely company-configured (custom attributes/properties) -- workflow\nschemas, signature status, attachments, comments, approvals, report\nstatus. Raw JSON is preserved verbatim rather than forcing a rigid\nschema onto per-company custom fields.",
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "RawResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.list_workflow_schemas",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "get_workflow_schema",
+      "description": "Read one workflow design (template) in full -- its launch-form attribute ids and types, needed before calling launch_workflow.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "template_id": {
+            "description": "Workflow design/template id, from list_workflow_schemas.",
+            "title": "Template Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "template_id"
+        ],
+        "title": "GetWorkflowSchemaParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "description": "Generic pass-through entity for Ironclad resources whose shape is\nlargely company-configured (custom attributes/properties) -- workflow\nschemas, signature status, attachments, comments, approvals, report\nstatus. Raw JSON is preserved verbatim rather than forcing a rigid\nschema onto per-company custom fields.",
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "RawResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.get_workflow_schema",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "update_workflow_attributes",
+      "description": "Update one or more attribute values on an active workflow, e.g. correcting a counterparty name mid-review.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.workflow.updated"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "workflow_id": {
+            "description": "Workflow id whose attributes to update.",
+            "title": "Workflow Id",
+            "type": "string"
+          },
+          "attributes_json": {
+            "description": "JSON object mapping attribute IDs to new values.",
+            "title": "Attributes Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workflow_id",
+          "attributes_json"
+        ],
+        "title": "UpdateWorkflowAttributesParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "default": "",
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "template_id": {
+            "default": "",
+            "title": "Template Id",
+            "type": "string"
+          },
+          "created_at": {
+            "default": "",
+            "title": "Created At",
+            "type": "string"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "title": "Workflow",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.update_workflow_attributes",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "get_workflow_attachment",
+      "description": "Read one file attachment's metadata/download info on an active workflow.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "workflow_id": {
+            "description": "Workflow id the attachment belongs to.",
+            "title": "Workflow Id",
+            "type": "string"
+          },
+          "attachment_id": {
+            "description": "Attachment id, from the workflow's attachment list.",
+            "title": "Attachment Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workflow_id",
+          "attachment_id"
+        ],
+        "title": "GetWorkflowAttachmentParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "description": "Generic pass-through entity for Ironclad resources whose shape is\nlargely company-configured (custom attributes/properties) -- workflow\nschemas, signature status, attachments, comments, approvals, report\nstatus. Raw JSON is preserved verbatim rather than forcing a rigid\nschema onto per-company custom fields.",
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "RawResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.get_workflow_attachment",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "add_workflow_attachment",
+      "description": "Attach a file (fetched from a publicly reachable URL) to an active workflow.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.workflow.attachment_added"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "workflow_id": {
+            "description": "Workflow id to attach the file to.",
+            "title": "Workflow Id",
+            "type": "string"
+          },
+          "file_name": {
+            "description": "File name to store, e.g. 'redline-v2.docx'.",
+            "title": "File Name",
+            "type": "string"
+          },
+          "file_url": {
+            "description": "Publicly reachable URL Ironclad can fetch the file content from.",
+            "title": "File Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workflow_id",
+          "file_name",
+          "file_url"
+        ],
+        "title": "AddWorkflowAttachmentParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "description": "Generic pass-through entity for Ironclad resources whose shape is\nlargely company-configured (custom attributes/properties) -- workflow\nschemas, signature status, attachments, comments, approvals, report\nstatus. Raw JSON is preserved verbatim rather than forcing a rigid\nschema onto per-company custom fields.",
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "RawResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.add_workflow_attachment",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "create_workflow_comment",
+      "description": "Add a comment to an active workflow, visible to its participants inside Ironclad.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.workflow.commented"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "workflow_id": {
+            "description": "Workflow id to comment on.",
+            "title": "Workflow Id",
+            "type": "string"
+          },
+          "text": {
+            "description": "Comment text, e.g. 'Legal approved with redlines attached.'",
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workflow_id",
+          "text"
+        ],
+        "title": "CreateWorkflowCommentParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "description": "Generic pass-through entity for Ironclad resources whose shape is\nlargely company-configured (custom attributes/properties) -- workflow\nschemas, signature status, attachments, comments, approvals, report\nstatus. Raw JSON is preserved verbatim rather than forcing a rigid\nschema onto per-company custom fields.",
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "RawResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.create_workflow_comment",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "send_signature_request",
+      "description": "Trigger Ironclad's e-signature flow for a workflow currently ready for signature, naming who should sign.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.workflow.signature_requested"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "workflow_id": {
+            "description": "Workflow id ready for signature.",
+            "title": "Workflow Id",
+            "type": "string"
+          },
+          "signers_json": {
+            "description": "JSON array of signer objects, e.g. [{\"email\": \"ceo@acme.com\", \"name\": \"Jane Doe\"}].",
+            "title": "Signers Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workflow_id",
+          "signers_json"
+        ],
+        "title": "SendSignatureRequestParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "description": "Generic pass-through entity for Ironclad resources whose shape is\nlargely company-configured (custom attributes/properties) -- workflow\nschemas, signature status, attachments, comments, approvals, report\nstatus. Raw JSON is preserved verbatim rather than forcing a rigid\nschema onto per-company custom fields.",
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "RawResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.send_signature_request",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "get_signature_status",
+      "description": "Read the current e-signature status of a workflow -- who has signed, who is pending.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "workflow_id": {
+            "description": "Workflow id to check signature status for.",
+            "title": "Workflow Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workflow_id"
+        ],
+        "title": "GetSignatureStatusParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "description": "Generic pass-through entity for Ironclad resources whose shape is\nlargely company-configured (custom attributes/properties) -- workflow\nschemas, signature status, attachments, comments, approvals, report\nstatus. Raw JSON is preserved verbatim rather than forcing a rigid\nschema onto per-company custom fields.",
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "RawResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.get_signature_status",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "update_approval",
+      "description": "Approve or reject a pending approval step on a workflow, acting as the connection's configured user.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.workflow.approval_updated"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "workflow_id": {
+            "description": "Workflow id containing the approval step.",
+            "title": "Workflow Id",
+            "type": "string"
+          },
+          "step_id": {
+            "description": "Approval step id, from get_workflow.",
+            "title": "Step Id",
+            "type": "string"
+          },
+          "decision": {
+            "description": "Approval decision: 'approve' or 'reject'.",
+            "title": "Decision",
+            "type": "string"
+          },
+          "comment": {
+            "default": "",
+            "description": "Optional comment explaining the decision.",
+            "title": "Comment",
+            "type": "string"
+          }
+        },
+        "required": [
+          "workflow_id",
+          "step_id",
+          "decision"
+        ],
+        "title": "UpdateApprovalParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "description": "Generic pass-through entity for Ironclad resources whose shape is\nlargely company-configured (custom attributes/properties) -- workflow\nschemas, signature status, attachments, comments, approvals, report\nstatus. Raw JSON is preserved verbatim rather than forcing a rigid\nschema onto per-company custom fields.",
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "RawResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.update_approval",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "list_records",
+      "description": "List records (completed/signed agreements) in the connected Ironclad company, with optional filtering by type, last-updated timestamp, and one property value.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "page": {
+            "default": 0,
+            "description": "Page number, 0-indexed.",
+            "title": "Page",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 50,
+            "description": "Results per page.",
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "types": {
+            "default": "",
+            "description": "Comma-separated record types to filter by, e.g. 'NDA,MSA'. Leave blank for all types.",
+            "title": "Types",
+            "type": "string"
+          },
+          "last_updated": {
+            "default": "",
+            "description": "Only records updated since this UTC timestamp (ISO 8601). Leave blank for no filter.",
+            "title": "Last Updated",
+            "type": "string"
+          },
+          "filter_property": {
+            "default": "",
+            "description": "Record property id to filter on, e.g. 'counterpartyName'. Leave blank for no property filter.",
+            "title": "Filter Property",
+            "type": "string"
+          },
+          "filter_value": {
+            "default": "",
+            "description": "Value the filter_property must contain. Required only if filter_property is set.",
+            "title": "Filter Value",
+            "type": "string"
+          },
+          "sort_field": {
+            "default": "agreementDate",
+            "description": "Field to sort by: agreementDate, name, or lastUpdated.",
+            "title": "Sort Field",
+            "type": "string"
+          },
+          "sort_direction": {
+            "default": "DESC",
+            "description": "Sort direction: ASC or DESC.",
+            "title": "Sort Direction",
+            "type": "string"
+          }
+        },
+        "title": "ListRecordsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "Record": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "name": {
+                "default": "",
+                "title": "Name",
+                "type": "string"
+              },
+              "record_type": {
+                "default": "",
+                "title": "Record Type",
+                "type": "string"
+              },
+              "agreement_date": {
+                "default": "",
+                "title": "Agreement Date",
+                "type": "string"
+              },
+              "last_updated": {
+                "default": "",
+                "title": "Last Updated",
+                "type": "string"
+              },
+              "raw_json": {
+                "default": "",
+                "title": "Raw Json",
+                "type": "string"
+              }
+            },
+            "required": [
+              "title"
+            ],
+            "title": "Record",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/Record"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "total": {
+            "default": 0,
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "items"
+        ],
+        "title": "RecordList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.list_records",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "get_record",
+      "description": "Read one record (completed/signed agreement) in full, including its properties and attachment list.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "record_id": {
+            "description": "Record id, e.g. from list_records.",
+            "title": "Record Id",
+            "type": "string"
+          },
+          "hydrate_entities": {
+            "default": false,
+            "description": "If true, expand linked entity ids into full entity objects in the response.",
+            "title": "Hydrate Entities",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "record_id"
+        ],
+        "title": "GetRecordParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "record_type": {
+            "default": "",
+            "title": "Record Type",
+            "type": "string"
+          },
+          "agreement_date": {
+            "default": "",
+            "title": "Agreement Date",
+            "type": "string"
+          },
+          "last_updated": {
+            "default": "",
+            "title": "Last Updated",
+            "type": "string"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "title": "Record",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.get_record",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "get_records_schema",
+      "description": "Read the Records schema: every record type and its configured properties/attributes, needed before create_record or update_record.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "description": "Explicit empty params model -- V17 disallows untyped handlers.",
+        "properties": {},
+        "title": "NoParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "description": "Generic pass-through entity for Ironclad resources whose shape is\nlargely company-configured (custom attributes/properties) -- workflow\nschemas, signature status, attachments, comments, approvals, report\nstatus. Raw JSON is preserved verbatim rather than forcing a rigid\nschema onto per-company custom fields.",
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "RawResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.get_records_schema",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "create_record",
+      "description": "Create a new record directly (e.g. migrating a legacy signed agreement into Ironclad without running it through a workflow first).",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.record.created"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "name": {
+            "description": "Contract record name, e.g. 'NDA - Acme Corp 2026'.",
+            "title": "Name",
+            "type": "string"
+          },
+          "record_type": {
+            "description": "Record type id, from get_records_schema.",
+            "title": "Record Type",
+            "type": "string"
+          },
+          "properties_json": {
+            "default": "{}",
+            "description": "JSON object of record property values keyed by property id.",
+            "title": "Properties Json",
+            "type": "string"
+          },
+          "parent_record_id": {
+            "default": "",
+            "description": "Optional parent record id to link this record under (e.g. an amendment under its master agreement).",
+            "title": "Parent Record Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "record_type"
+        ],
+        "title": "CreateRecordParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "record_type": {
+            "default": "",
+            "title": "Record Type",
+            "type": "string"
+          },
+          "agreement_date": {
+            "default": "",
+            "title": "Agreement Date",
+            "type": "string"
+          },
+          "last_updated": {
+            "default": "",
+            "title": "Last Updated",
+            "type": "string"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "title": "Record",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.create_record",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "update_record",
+      "description": "Update selected property values on an existing record. Only the properties you pass change.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.record.updated"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "record_id": {
+            "description": "Record id to update.",
+            "title": "Record Id",
+            "type": "string"
+          },
+          "properties_json": {
+            "description": "JSON object of record property values to update, keyed by property id.",
+            "title": "Properties Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "record_id",
+          "properties_json"
+        ],
+        "title": "UpdateRecordParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "record_type": {
+            "default": "",
+            "title": "Record Type",
+            "type": "string"
+          },
+          "agreement_date": {
+            "default": "",
+            "title": "Agreement Date",
+            "type": "string"
+          },
+          "last_updated": {
+            "default": "",
+            "title": "Last Updated",
+            "type": "string"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "title": "Record",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.update_record",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "delete_record",
+      "description": "Permanently delete a record. Cannot be undone through the API -- use with care.",
+      "action_type": "destructive",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.record.deleted"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "record_id": {
+            "description": "Record id to delete.",
+            "title": "Record Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "record_id"
+        ],
+        "title": "DeleteRecordParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.delete_record",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "get_record_attachment",
+      "description": "Read one record attachment's metadata and download link.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "record_id": {
+            "description": "Record id the attachment belongs to.",
+            "title": "Record Id",
+            "type": "string"
+          },
+          "attachment_id": {
+            "description": "Attachment id, from the record's attachment list.",
+            "title": "Attachment Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "record_id",
+          "attachment_id"
+        ],
+        "title": "GetRecordAttachmentParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "description": "Generic pass-through entity for Ironclad resources whose shape is\nlargely company-configured (custom attributes/properties) -- workflow\nschemas, signature status, attachments, comments, approvals, report\nstatus. Raw JSON is preserved verbatim rather than forcing a rigid\nschema onto per-company custom fields.",
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "RawResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.get_record_attachment",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "add_record_attachment",
+      "description": "Attach a file to an existing record by giving Ironclad a publicly reachable URL to fetch it from.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.record.attachment_added"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "record_id": {
+            "description": "Record id to attach the file to.",
+            "title": "Record Id",
+            "type": "string"
+          },
+          "file_name": {
+            "description": "File name to store, e.g. 'signed-agreement.pdf'.",
+            "title": "File Name",
+            "type": "string"
+          },
+          "file_url": {
+            "description": "Publicly reachable URL Ironclad can fetch the file content from.",
+            "title": "File Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "record_id",
+          "file_name",
+          "file_url"
+        ],
+        "title": "AddRecordAttachmentParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "description": "Generic pass-through entity for Ironclad resources whose shape is\nlargely company-configured (custom attributes/properties) -- workflow\nschemas, signature status, attachments, comments, approvals, report\nstatus. Raw JSON is preserved verbatim rather than forcing a rigid\nschema onto per-company custom fields.",
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "RawResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.add_record_attachment",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "delete_record_attachment",
+      "description": "Permanently remove an attachment from a record. Cannot be undone.",
+      "action_type": "destructive",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.record.attachment_deleted"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "record_id": {
+            "description": "Record id the attachment belongs to.",
+            "title": "Record Id",
+            "type": "string"
+          },
+          "attachment_id": {
+            "description": "Attachment id to delete.",
+            "title": "Attachment Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "record_id",
+          "attachment_id"
+        ],
+        "title": "DeleteRecordAttachmentParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.delete_record_attachment",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "apply_contract_action",
+      "description": "Apply a post-signature contract action to a record -- e.g. renew, terminate, or amend -- using the action types configured for that record's type.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.record.action_applied"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "record_id": {
+            "description": "Record id to apply the action to.",
+            "title": "Record Id",
+            "type": "string"
+          },
+          "action_type": {
+            "description": "Contract action type, e.g. 'renew', 'terminate', 'amend' (exact set depends on the record type's configured actions).",
+            "title": "Action Type",
+            "type": "string"
+          },
+          "properties_json": {
+            "default": "{}",
+            "description": "JSON object of any additional property values the action requires.",
+            "title": "Properties Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "record_id",
+          "action_type"
+        ],
+        "title": "ApplyContractActionParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "description": "Generic pass-through entity for Ironclad resources whose shape is\nlargely company-configured (custom attributes/properties) -- workflow\nschemas, signature status, attachments, comments, approvals, report\nstatus. Raw JSON is preserved verbatim rather than forcing a rigid\nschema onto per-company custom fields.",
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "RawResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.apply_contract_action",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "smart_import_record",
+      "description": "Create a record from an already-signed document by URL, using Ironclad's own AI to extract its metadata automatically -- ideal for bulk-migrating a legacy contract archive.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.record.created"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "name": {
+            "description": "Contract record name for the imported document.",
+            "title": "Name",
+            "type": "string"
+          },
+          "record_type": {
+            "description": "Record type id to classify the imported document as.",
+            "title": "Record Type",
+            "type": "string"
+          },
+          "file_url": {
+            "description": "Publicly reachable URL of the signed document Ironclad should extract metadata from.",
+            "title": "File Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "record_type",
+          "file_url"
+        ],
+        "title": "SmartImportRecordParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "record_type": {
+            "default": "",
+            "title": "Record Type",
+            "type": "string"
+          },
+          "agreement_date": {
+            "default": "",
+            "title": "Agreement Date",
+            "type": "string"
+          },
+          "last_updated": {
+            "default": "",
+            "title": "Last Updated",
+            "type": "string"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "title": "Record",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.smart_import_record",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "list_entities",
+      "description": "List counterparty/contact entities (companies and individuals) registered in the connected Ironclad company.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "page": {
+            "default": 0,
+            "description": "Page number, 0-indexed.",
+            "title": "Page",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 50,
+            "description": "Results per page.",
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "entity_type": {
+            "default": "",
+            "description": "Filter by entity type, e.g. 'Company', 'Individual'. Leave blank for all types.",
+            "title": "Entity Type",
+            "type": "string"
+          }
+        },
+        "title": "ListEntitiesParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "Entity_": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "name": {
+                "default": "",
+                "title": "Name",
+                "type": "string"
+              },
+              "entity_type": {
+                "default": "",
+                "title": "Entity Type",
+                "type": "string"
+              },
+              "raw_json": {
+                "default": "",
+                "title": "Raw Json",
+                "type": "string"
+              }
+            },
+            "required": [
+              "title"
+            ],
+            "title": "Entity_",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/Entity_"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "total": {
+            "default": 0,
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "items"
+        ],
+        "title": "EntityList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.list_entities",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "get_entity",
+      "description": "Read one counterparty/contact entity in full.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "entity_id": {
+            "description": "Entity id, e.g. from list_entities.",
+            "title": "Entity Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "entity_id"
+        ],
+        "title": "GetEntityParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "entity_type": {
+            "default": "",
+            "title": "Entity Type",
+            "type": "string"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "title": "Entity_",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.get_entity",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "create_entity",
+      "description": "Create a new counterparty/contact entity (a company or individual your organization contracts with).",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.entity.created"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "name": {
+            "description": "Counterparty entity name, e.g. 'Acme Corp'.",
+            "title": "Name",
+            "type": "string"
+          },
+          "entity_type": {
+            "description": "Entity type id, from Ironclad's entity type configuration.",
+            "title": "Entity Type",
+            "type": "string"
+          },
+          "properties_json": {
+            "default": "{}",
+            "description": "JSON object of entity property values keyed by property id.",
+            "title": "Properties Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "entity_type"
+        ],
+        "title": "CreateEntityParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "entity_type": {
+            "default": "",
+            "title": "Entity Type",
+            "type": "string"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "title": "Entity_",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.create_entity",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "update_entity",
+      "description": "Update selected property values of an existing entity. Only the given properties change.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.entity.updated"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "entity_id": {
+            "description": "Entity id to update.",
+            "title": "Entity Id",
+            "type": "string"
+          },
+          "properties_json": {
+            "description": "JSON object of entity property values to update, keyed by property id.",
+            "title": "Properties Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "entity_id",
+          "properties_json"
+        ],
+        "title": "UpdateEntityParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "entity_type": {
+            "default": "",
+            "title": "Entity Type",
+            "type": "string"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "title": "Entity_",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.update_entity",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "delete_entity",
+      "description": "Permanently delete a counterparty/contact entity. Cannot be undone -- records/workflows referencing it will lose that link.",
+      "action_type": "destructive",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.entity.deleted"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "entity_id": {
+            "description": "Entity id to delete.",
+            "title": "Entity Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "entity_id"
+        ],
+        "title": "DeleteEntityParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.delete_entity",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "list_relationship_types",
+      "description": "List the relationship types available for linking entities to each other (e.g. 'Parent Company', 'Subsidiary').",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "description": "Explicit empty params model -- V17 disallows untyped handlers.",
+        "properties": {},
+        "title": "NoParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "description": "Generic pass-through entity for Ironclad resources whose shape is\nlargely company-configured (custom attributes/properties) -- workflow\nschemas, signature status, attachments, comments, approvals, report\nstatus. Raw JSON is preserved verbatim rather than forcing a rigid\nschema onto per-company custom fields.",
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "RawResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.list_relationship_types",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "list_obligations",
+      "description": "List post-signature obligations (renewal reminders, SLA deliverables, compliance deadlines), optionally filtered to one record.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "page": {
+            "default": 0,
+            "description": "Page number, 0-indexed.",
+            "title": "Page",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 50,
+            "description": "Results per page.",
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "record_id": {
+            "default": "",
+            "description": "Filter obligations to only those linked to this record id. Leave blank for all.",
+            "title": "Record Id",
+            "type": "string"
+          }
+        },
+        "title": "ListObligationsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "Obligation": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "name": {
+                "default": "",
+                "title": "Name",
+                "type": "string"
+              },
+              "record_id": {
+                "default": "",
+                "title": "Record Id",
+                "type": "string"
+              },
+              "due_date": {
+                "default": "",
+                "title": "Due Date",
+                "type": "string"
+              },
+              "raw_json": {
+                "default": "",
+                "title": "Raw Json",
+                "type": "string"
+              }
+            },
+            "required": [
+              "title"
+            ],
+            "title": "Obligation",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/Obligation"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "total": {
+            "default": 0,
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "items"
+        ],
+        "title": "ObligationList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.list_obligations",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "get_obligation",
+      "description": "Read one obligation in full.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "obligation_id": {
+            "description": "Obligation id, e.g. from list_obligations.",
+            "title": "Obligation Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "obligation_id"
+        ],
+        "title": "GetObligationParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "record_id": {
+            "default": "",
+            "title": "Record Id",
+            "type": "string"
+          },
+          "due_date": {
+            "default": "",
+            "title": "Due Date",
+            "type": "string"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "title": "Obligation",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.get_obligation",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "create_obligation",
+      "description": "Create a new obligation linked to an existing record -- a deadline or deliverable that outlives the signature process.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.obligation.created"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "name": {
+            "description": "Obligation name, e.g. 'Quarterly SLA report due'.",
+            "title": "Name",
+            "type": "string"
+          },
+          "record_id": {
+            "description": "Record id this obligation is linked to.",
+            "title": "Record Id",
+            "type": "string"
+          },
+          "due_date": {
+            "default": "",
+            "description": "Due date in ISO 8601 (YYYY-MM-DD), if applicable.",
+            "title": "Due Date",
+            "type": "string"
+          },
+          "properties_json": {
+            "default": "{}",
+            "description": "JSON object of any additional obligation property values.",
+            "title": "Properties Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "record_id"
+        ],
+        "title": "CreateObligationParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "record_id": {
+            "default": "",
+            "title": "Record Id",
+            "type": "string"
+          },
+          "due_date": {
+            "default": "",
+            "title": "Due Date",
+            "type": "string"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "title": "Obligation",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.create_obligation",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "update_obligation",
+      "description": "Update selected property values of an existing obligation. Only the given properties change.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.obligation.updated"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "obligation_id": {
+            "description": "Obligation id to update.",
+            "title": "Obligation Id",
+            "type": "string"
+          },
+          "properties_json": {
+            "description": "JSON object of obligation property values to update.",
+            "title": "Properties Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "obligation_id",
+          "properties_json"
+        ],
+        "title": "UpdateObligationParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "record_id": {
+            "default": "",
+            "title": "Record Id",
+            "type": "string"
+          },
+          "due_date": {
+            "default": "",
+            "title": "Due Date",
+            "type": "string"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "title": "Obligation",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.update_obligation",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "delete_obligation",
+      "description": "Permanently delete an obligation. Cannot be undone.",
+      "action_type": "destructive",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.obligation.deleted"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "obligation_id": {
+            "description": "Obligation id to delete.",
+            "title": "Obligation Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "obligation_id"
+        ],
+        "title": "DeleteObligationParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.delete_obligation",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "list_webhooks",
+      "description": "List webhook subscriptions configured on the connected Ironclad company.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "description": "Explicit empty params model -- V17 disallows untyped handlers.",
+        "properties": {},
+        "title": "NoParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "Webhook": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "target_url": {
+                "default": "",
+                "title": "Target Url",
+                "type": "string"
+              },
+              "events": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Events",
+                "type": "array"
+              }
+            },
+            "required": [
+              "title"
+            ],
+            "title": "Webhook",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/Webhook"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "items"
+        ],
+        "title": "WebhookList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.list_webhooks",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "create_webhook",
+      "description": "Subscribe to Ironclad workflow/record/obligation lifecycle events -- Ironclad will POST event payloads to your target URL as they happen.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.webhook.created"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "target_url": {
+            "description": "HTTPS URL Ironclad should POST event payloads to.",
+            "title": "Target Url",
+            "type": "string"
+          },
+          "events_csv": {
+            "description": "Comma-separated event types to subscribe to, e.g. 'workflow.launched,workflow.completed,record.created'.",
+            "title": "Events Csv",
+            "type": "string"
+          },
+          "secret": {
+            "default": "",
+            "description": "Optional shared secret Ironclad will use to sign webhook payloads for verification.",
+            "title": "Secret",
+            "type": "string"
+          }
+        },
+        "required": [
+          "target_url",
+          "events_csv"
+        ],
+        "title": "CreateWebhookParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "target_url": {
+            "default": "",
+            "title": "Target Url",
+            "type": "string"
+          },
+          "events": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Events",
+            "type": "array"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "title": "Webhook",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.create_webhook",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "update_webhook",
+      "description": "Update an existing webhook's target URL and/or subscribed events. Only the given fields change.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.webhook.updated"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "webhook_id": {
+            "description": "Webhook id to update, from list_webhooks.",
+            "title": "Webhook Id",
+            "type": "string"
+          },
+          "target_url": {
+            "default": "",
+            "description": "New target URL, or leave blank to keep current.",
+            "title": "Target Url",
+            "type": "string"
+          },
+          "events_csv": {
+            "default": "",
+            "description": "New comma-separated event types, or leave blank to keep current.",
+            "title": "Events Csv",
+            "type": "string"
+          }
+        },
+        "required": [
+          "webhook_id"
+        ],
+        "title": "UpdateWebhookParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "target_url": {
+            "default": "",
+            "title": "Target Url",
+            "type": "string"
+          },
+          "events": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Events",
+            "type": "array"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "title": "Webhook",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.update_webhook",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "delete_webhook",
+      "description": "Permanently remove a webhook subscription. Cannot be undone.",
+      "action_type": "destructive",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.webhook.deleted"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "webhook_id": {
+            "description": "Webhook id to delete.",
+            "title": "Webhook Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "webhook_id"
+        ],
+        "title": "DeleteWebhookParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.delete_webhook",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "create_report",
+      "description": "Start a data export (report) of records or workflows for offline analysis. Requires the Reports/Exports feature to be enabled on your Ironclad plan -- a permission error here likely means it isn't.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.report.created"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "report_type": {
+            "description": "Report type to generate, e.g. 'records' or 'workflows'.",
+            "title": "Report Type",
+            "type": "string"
+          },
+          "filters_json": {
+            "default": "{}",
+            "description": "JSON object of report filter criteria, matching the same filters as list_records/list_workflows.",
+            "title": "Filters Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "report_type"
+        ],
+        "title": "CreateReportParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "default": "",
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "download_url": {
+            "default": "",
+            "title": "Download Url",
+            "type": "string"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "title": "Report",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.create_report",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "get_report",
+      "description": "Check the status of a data export and get its download URL once ready.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "report_id": {
+            "description": "Report id returned by create_report.",
+            "title": "Report Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "report_id"
+        ],
+        "title": "GetReportParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "default": "",
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "download_url": {
+            "default": "",
+            "title": "Download Url",
+            "type": "string"
+          },
+          "raw_json": {
+            "default": "",
+            "title": "Raw Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "title": "Report",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.get_report",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "audit_contract_health",
+      "description": "Build one aggregated health report across the connected Ironclad company: active vs stalled workflows, recently completed workflows, and obligations due in the next 30 days -- one call instead of manually cross-referencing several reads.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "lookback_days": {
+            "default": 30,
+            "description": "How many days back to scan workflows/records for the health snapshot.",
+            "title": "Lookback Days",
+            "type": "integer"
+          }
+        },
+        "title": "AuditContractHealthParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "active_workflow_count": {
+            "default": 0,
+            "title": "Active Workflow Count",
+            "type": "integer"
+          },
+          "stalled_workflow_count": {
+            "default": 0,
+            "title": "Stalled Workflow Count",
+            "type": "integer"
+          },
+          "completed_last_period": {
+            "default": 0,
+            "title": "Completed Last Period",
+            "type": "integer"
+          },
+          "upcoming_obligations_30d": {
+            "default": 0,
+            "title": "Upcoming Obligations 30D",
+            "type": "integer"
+          },
+          "summary": {
+            "default": "",
+            "title": "Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "ContractHealthReport",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.audit_contract_health",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "find_expiring_contracts",
+      "description": "Value-add report: scan records and flag every one whose agreement/expiration date falls within a given window from now -- absorbs the client-side date-window math Ironclad's own list_records filter doesn't do.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "within_days": {
+            "default": 60,
+            "description": "Find records whose agreement/expiration date falls within this many days from now.",
+            "title": "Within Days",
+            "type": "integer"
+          },
+          "record_type": {
+            "default": "",
+            "description": "Optional record type filter, e.g. 'MSA'. Leave blank for all types.",
+            "title": "Record Type",
+            "type": "string"
+          }
+        },
+        "title": "FindExpiringContractsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "Record": {
+            "properties": {
+              "id": {
+                "default": "",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "name": {
+                "default": "",
+                "title": "Name",
+                "type": "string"
+              },
+              "record_type": {
+                "default": "",
+                "title": "Record Type",
+                "type": "string"
+              },
+              "agreement_date": {
+                "default": "",
+                "title": "Agreement Date",
+                "type": "string"
+              },
+              "last_updated": {
+                "default": "",
+                "title": "Last Updated",
+                "type": "string"
+              },
+              "raw_json": {
+                "default": "",
+                "title": "Raw Json",
+                "type": "string"
+              }
+            },
+            "required": [
+              "title"
+            ],
+            "title": "Record",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/$defs/Record"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "total": {
+            "default": 0,
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "items"
+        ],
+        "title": "RecordList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.find_expiring_contracts",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    },
+    {
+      "name": "bulk_tag_records",
+      "description": "Apply the same property values to several existing records in one call -- e.g. tagging every contract from an acquired subsidiary with a new business-unit code. Ironclad's own API has no native bulk-update endpoint for records, so this loops update_record and reports how many succeeded.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "ironclad.records.bulk_updated"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Which connected Ironclad company to use, from list_connections. Leave blank to use the only/first connected company.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "record_ids_csv": {
+            "description": "Comma-separated record ids to update in one pass.",
+            "title": "Record Ids Csv",
+            "type": "string"
+          },
+          "properties_json": {
+            "description": "JSON object of property values to apply to every listed record.",
+            "title": "Properties Json",
+            "type": "string"
+          }
+        },
+        "required": [
+          "record_ids_csv",
+          "properties_json"
+        ],
+        "title": "BulkTagRecordsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "updated": {
+            "default": 0,
+            "title": "Updated",
+            "type": "integer"
+          },
+          "failed": {
+            "default": 0,
+            "title": "Failed",
+            "type": "integer"
+          },
+          "errors": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Errors",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "BulkUpdateResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "ironclad-connector.bulk_tag_records",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "ironclad"
+    }
+  ],
+  "signals": [],
+  "schedules": [],
+  "required_scopes": [],
+  "icon_size_bytes": 6572,
+  "lifecycle": {
+    "health_check": {
+      "interval_sec": 60
+    }
+  },
+  "secrets": [
+    {
+      "name": "ironclad_connections",
+      "description": "Saved Ironclad OAuth Client connections -- stored as a JSON array, one entry per connected company, each with its own client_id, client_secret, as_user_email, region, and label. Managed through connect_ironclad / disconnect_ironclad -- you should not need to edit this directly.",
+      "required": true,
+      "write_mode": "both",
+      "max_bytes": 65536,
+      "scope": "user",
+      "rotation_hint_days": 180
+    }
+  ],
+  "panels": [
+    {
+      "panel_id": "secrets",
+      "slot": "right",
+      "title": "Secrets",
+      "tree": {},
+      "icon": "KeyRound",
+      "refresh": "manual",
+      "center_overlay": false
+    },
+    {
+      "panel_id": "ironclad_connect",
+      "slot": "left",
+      "title": "Ironclad",
+      "tree": {},
+      "icon": "📜",
+      "refresh": "manual",
+      "center_overlay": false,
+      "default_width": 320,
+      "min_width": 260,
+      "max_width": 420
+    },
+    {
+      "panel_id": "ironclad_connect_help",
+      "slot": "center",
+      "title": "How to connect Ironclad",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "ironclad_center",
+      "slot": "center",
+      "title": "Ironclad",
+      "tree": {},
+      "icon": "📜",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "ironclad_settings",
+      "slot": "center",
+      "title": "",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": false
+    }
+  ]
+}
