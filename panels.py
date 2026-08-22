@@ -91,7 +91,7 @@ def _connect_section() -> ui.UINode:
                         {"label": "na1 -- US (default)", "value": "na1"},
                         {"label": "eu1 -- EU data residency", "value": "eu1"},
                         {"label": "demo -- Sandbox", "value": "demo"},
-                    ], default_value="na1"),
+                    ], value="na1"),
                 ]),
                 ui.Stack(direction="v", gap=1, align="stretch", children=[
                     ui.Text("Label (optional)", variant="caption"),
