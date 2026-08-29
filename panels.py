@@ -124,6 +124,9 @@ async def ironclad_connect_panel(ctx, **kwargs) -> object:
         ui.Text("Connected companies", variant="subtitle"),
         _connections_section(connections),
         ui.Divider(),
+        ui.Button("View contract health", variant="primary", size="sm", full_width=True,
+                  icon="FileText", on_click=ui.Call("__panel__ironclad_center")),
+        ui.Divider(),
         _connect_section(),
         ui.Divider(),
         _settings_button(),
@@ -174,7 +177,27 @@ async def ironclad_center_panel(ctx, **kwargs) -> object:
     slot="center" panel is registered but the Panel app never fetches it
     at session-init without that flag. Text is the shared canonical
     wording -- must stay identical across every app in this situation."""
-    return ui.Empty(
-        message="Nothing to show here -- this app is managed entirely from the sidebar.",
-        icon="👈",
-    )
+    connections = await _load_connections(ctx)
+    if not connections:
+        return ui.Empty(message="Connect an Ironclad company from the sidebar to see it here.", icon="📜")
+
+    import handlers_automation as ha
+    from schemas import AuditContractHealthParams
+    conn_id = connections[0].get("id", "")
+    result = await ha.audit_contract_health(ctx, AuditContractHealthParams(connection_id=conn_id))
+    body: list[ui.UINode] = [ui.Text("Contract health", variant="subtitle")]
+    if result.success and result.data:
+        r = result.data
+        body.append(ui.Stats(children=[
+            ui.Stat(label="Active workflows", value=str(r.active_workflow_count)),
+            ui.Stat(label="Stalled", value=str(r.stalled_workflow_count)),
+            ui.Stat(label="Completed (period)", value=str(r.completed_last_period)),
+            ui.Stat(label="Obligations (30d)", value=str(r.upcoming_obligations_30d)),
+        ]))
+        if r.summary:
+            body.append(ui.Divider())
+            body.append(ui.Text(r.summary, variant="body"))
+    else:
+        body.append(ui.Text("Could not load the contract health audit.", variant="caption"))
+
+    return ui.Stack(direction="v", gap=3, align="stretch", children=body)
