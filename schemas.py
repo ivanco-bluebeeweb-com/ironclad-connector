@@ -44,10 +44,14 @@ class ProviderConnection(sdl.Entity):
 
 
 class ProviderConnectionList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[ProviderConnection]
 
 
 class DeleteResult(sdl.Entity):
+    id: str = ""
+    title: str = ""
     ok: bool = True
 
 
@@ -57,6 +61,8 @@ class RawResult(sdl.Entity):
     schemas, signature status, attachments, comments, approvals, report
     status. Raw JSON is preserved verbatim rather than forcing a rigid
     schema onto per-company custom fields."""
+    id: str = ""
+    title: str = ""
     raw_json: str = ""
 
 
@@ -148,6 +154,7 @@ class UpdateApprovalParams(_ConnScopedParams):
 
 
 class Workflow(sdl.Entity):
+    title: str = ""
     id: str = ""
     name: str = ""
     status: str = ""
@@ -157,6 +164,8 @@ class Workflow(sdl.Entity):
 
 
 class WorkflowList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[Workflow]
     total: int = 0
 
@@ -227,6 +236,7 @@ class SmartImportRecordParams(_ConnScopedParams):
 
 
 class Record(sdl.Entity):
+    title: str = ""
     id: str = ""
     name: str = ""
     record_type: str = ""
@@ -236,6 +246,8 @@ class Record(sdl.Entity):
 
 
 class RecordList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[Record]
     total: int = 0
 
@@ -271,6 +283,7 @@ class DeleteEntityParams(_ConnScopedParams):
 
 
 class Entity_(sdl.Entity):
+    title: str = ""
     id: str = ""
     name: str = ""
     entity_type: str = ""
@@ -278,6 +291,8 @@ class Entity_(sdl.Entity):
 
 
 class EntityList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[Entity_]
     total: int = 0
 
@@ -314,6 +329,7 @@ class DeleteObligationParams(_ConnScopedParams):
 
 
 class Obligation(sdl.Entity):
+    title: str = ""
     id: str = ""
     name: str = ""
     record_id: str = ""
@@ -322,6 +338,8 @@ class Obligation(sdl.Entity):
 
 
 class ObligationList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[Obligation]
     total: int = 0
 
@@ -348,12 +366,15 @@ class DeleteWebhookParams(_ConnScopedParams):
 
 
 class Webhook(sdl.Entity):
+    title: str = ""
     id: str = ""
     target_url: str = ""
     events: list[str] = Field(default_factory=list)
 
 
 class WebhookList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[Webhook]
 
 
@@ -372,6 +393,7 @@ class GetReportParams(_ConnScopedParams):
 
 
 class Report(sdl.Entity):
+    title: str = ""
     id: str = ""
     status: str = ""
     download_url: str = ""
@@ -388,6 +410,8 @@ class AuditContractHealthParams(_ConnScopedParams):
 
 
 class ContractHealthReport(sdl.Entity):
+    id: str = ""
+    title: str = ""
     active_workflow_count: int = 0
     stalled_workflow_count: int = 0
     completed_last_period: int = 0
@@ -406,6 +430,8 @@ class BulkTagRecordsParams(_ConnScopedParams):
 
 
 class BulkUpdateResult(sdl.Entity):
+    id: str = ""
+    title: str = ""
     updated: int = 0
     failed: int = 0
     errors: list[str] = Field(default_factory=list)
