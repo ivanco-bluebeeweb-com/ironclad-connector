@@ -31,8 +31,7 @@ def _settings_button() -> ui.UINode:
     """The one required secondary entry point into the settings screen --
     always the last element at the bottom of the sidebar."""
     return ui.Button(
-        "App settings", variant="secondary", size="sm", full_width=True,
-        icon="settings", on_click=ui.Call("__panel__ironclad_settings"),
+        "App settings", variant="secondary", size="sm", icon="settings", on_click=ui.Call("__panel__ironclad_settings"),
     )
 
 
@@ -124,8 +123,7 @@ async def ironclad_connect_panel(ctx, **kwargs) -> object:
         ui.Text("Connected companies", variant="subtitle"),
         _connections_section(connections),
         ui.Divider(),
-        ui.Button("View contract health", variant="primary", size="sm", full_width=True,
-                  icon="FileText", on_click=ui.Call("__panel__ironclad_center")),
+        ui.Button("View contract health", variant="primary", size="sm", icon="FileText", on_click=ui.Call("__panel__ironclad_center")),
         ui.Divider(),
         _connect_section(),
         ui.Divider(),
